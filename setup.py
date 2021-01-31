@@ -1,11 +1,13 @@
 import setuptools
 
+VERSION = '0.0.1'
+
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="openagua",
-    version="0.0.1",
+    version=VERSION,
     license="MIT",
     author="David Rheinheimer",
     author_email="david.rheinheimer@tec.mx",
