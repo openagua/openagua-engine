@@ -5,14 +5,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="openagua",
-    version="0.9",
+    version="0.0.1",
+    license="MIT",
     author="David Rheinheimer",
     author_email="david.rheinheimer@tec.mx",
     description="Tools to connect a model engine to OpenAgua",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/openagua/engine",
+    url="https://github.com/openagua/openagua-connect",
     packages=setuptools.find_packages(),
+    install_requires=["celery", "pubnub"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

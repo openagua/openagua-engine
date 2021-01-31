@@ -1,5 +1,13 @@
-from openagua import app
+from os import environ
+from openagua import create_app
 from examples.demo_model import run_demo_model
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+model_key = environ.get('OA_SECRET_KEY')
+app = create_app(model_key)
 
 
 @app.task(name='model.run')

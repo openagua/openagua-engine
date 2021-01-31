@@ -7,7 +7,7 @@ from openagua.utils import get_broker_url
 class RabbitMQPublisher(object):
 
     def __init__(self, source_id, network_id, model_key=None, run_key=None):
-        broker_url = get_broker_url()
+        broker_url = get_broker_url(model_key)
         self.conn = Connection(broker_url)
         self.conn.connect()
 

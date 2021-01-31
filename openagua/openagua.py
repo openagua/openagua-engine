@@ -1,14 +1,9 @@
 from os import environ
 import datetime as dt
 
-from dotenv import load_dotenv
-from loguru import logger
-
 from openagua import constants
 from openagua.publishers import PubNubPublisher
 from openagua.subscribers.pubnub import subscribe_pubnub
-
-load_dotenv()
 
 statuses = {
     'start': 'started',
@@ -23,6 +18,7 @@ statuses = {
 
 
 class OpenAgua:
+    reporter = None
     datetime = None
     _step = 0
     paused = False
@@ -104,14 +100,13 @@ class OpenAgua:
         payload = self.get_payload(action, **kwargs)
 
         if action in ['step', 'save']:
-            logger.info(action)  # comment out later
             # publish to a pubsub service for realtime updates
             self.publisher.publish(payload)
 
         if action != 'step':
-            logger.info(action)
             # report key events to the OpenAgua server
-            self.reporter.report(action, payload)
+            if self.reporter:
+                self.reporter.post(action, payload)
 
         return
 

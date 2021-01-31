@@ -1,11 +1,7 @@
 from os import environ
-from dotenv import load_dotenv
 
 
-def get_broker_url(protocol='amqp'):
-    load_dotenv()
-
-    model_key = environ.get('OA_SECRET_KEY')
+def get_broker_url(model_key, protocol='amqp'):
 
     broker_url = '{protocol}://{username}:{password}@{hostname}:5672/{vhost}'.format(
         protocol=protocol,

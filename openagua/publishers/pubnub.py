@@ -2,7 +2,6 @@ from os import environ
 
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
-from loguru import logger
 
 from openagua import constants
 
@@ -12,8 +11,8 @@ def on_publish(envelope, status):
     if not status.is_error():
         pass  # Message successfully published to specified channel.
     else:
-        logger.error("Failed to report progress.")
-        pass  # Handle message publish error. Check 'category' property to find out possible issue
+        raise Exception("Failed to report progress.")
+        # Handle message publish error. Check 'category' property to find out possible issue
         # because of which request did fail.
         # Request can be resent using: [status retry];
 

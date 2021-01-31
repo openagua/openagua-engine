@@ -5,10 +5,6 @@ from pubnub.enums import PNOperationType, PNStatusCategory
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 
-from loguru import logger
-
-from openagua import constants
-
 
 class PNSubscribeCallback(SubscribeCallback):
     def __init__(self, handle_message):
@@ -78,4 +74,3 @@ def subscribe_pubnub(uuid, channel, subscribe_key, handle_message):
     pubnub = create_pubnub_instance(uuid, subscribe_key)
     pubnub.add_listener(PNSubscribeCallback(handle_message))
     pubnub.subscribe().channels(channel).execute()
-    logger.info('Subscribed to model run updates')
