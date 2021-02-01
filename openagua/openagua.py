@@ -1,8 +1,10 @@
 from os import environ
 import datetime as dt
 
+import requests
+
 from openagua import constants
-from openagua.publishers import PubNubPublisher
+from openagua.publishers.pubnub import PubNubPublisher
 from openagua.subscribers.pubnub import subscribe_pubnub
 
 statuses = {
@@ -24,8 +26,13 @@ class OpenAgua:
     paused = False
     stopped = False
 
-    def __init__(self, guid, name, network_id, scenario_ids, source_id=1, secret_key=None, run_key=None,
-                 total_steps=None):
+    def __init__(self, guid, name, network_id, scenario_ids, source_id=1,
+                 api_endpoint='https://www.openagua.org/api/v1', api_key=None,
+                 secret_key=None, run_key=None, total_steps=None):
+
+        self.api_key = api_key or environ.get(constants.API_KEY)
+        self.api_endpoint = api_endpoint
+        self.network_id = network_id
 
         scen_ids_set = list(set(scenario_ids))
 
@@ -35,7 +42,7 @@ class OpenAgua:
         )
 
         self.run_id = run_id
-        self.key = secret_key or environ.get('OA_SECRET_KEY')
+        self.key = secret_key or environ.get(constants.MODEL_KEY)
         self.total_steps = total_steps
         if not self.key:
             raise Exception('No OpenAgua key supplied.')
@@ -79,15 +86,6 @@ class OpenAgua:
 
         return payload
 
-    def __getattr__(self, name):
-        def method(*args, **kwargs):
-            if name in statuses:
-                return self.publish_status(name, **kwargs)
-            else:
-                return getattr(self, name)(*args, **kwargs)
-
-        return method
-
     def publish_status(self, action, **kwargs):
 
         if action == 'step':
@@ -97,7 +95,7 @@ class OpenAgua:
             else:
                 self._step += 1
 
-        payload = self.get_payload(action, **kwargs)
+        payload = self.prepare_payload(action, **kwargs)
 
         if action in ['step', 'save']:
             # publish to a pubsub service for realtime updates

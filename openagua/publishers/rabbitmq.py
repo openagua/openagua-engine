@@ -2,6 +2,7 @@ from os import environ
 import json
 from kombu import Connection, Exchange, Queue
 from openagua.utils import get_broker_url
+from openagua import constants
 
 
 class RabbitMQPublisher(object):
@@ -14,7 +15,7 @@ class RabbitMQPublisher(object):
         self.channel = 'oa-{source_id}-{network_id}-{model_key}'.format(
             source_id=source_id,
             network_id=network_id,
-            model_key=model_key or environ.get('OA_SECRET_KEY')
+            model_key=model_key or environ.get(constants.MODEL_KEY)
         )
         if run_key is not None:
             self.channel += '-{}'.format(run_key)

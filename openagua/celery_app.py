@@ -1,11 +1,12 @@
 from os import environ
 from celery import Celery
 from openagua.utils import get_broker_url
+from openagua import constants
 
 
 def create_app(model_key=None, run_key=None):
-    model_key = model_key or environ.get('OA_SECRET_KEY')
-    run_key = run_key or environ.get('OA_RUN_KEY')
+    model_key = model_key or environ.get(constants.MODEL_KEY)
+    run_key = run_key or environ.get(constants.RUN_KEY)
     broker_url = get_broker_url(model_key)
 
     redis_host = environ.get('REDIS_HOST', 'localhost')

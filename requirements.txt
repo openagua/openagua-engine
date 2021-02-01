@@ -25,7 +25,7 @@ keyring==22.0.1
 kombu==5.0.2
 loguru==0.5.3
 multidict==5.1.0
-openagua==0.0.1
+openagua-engine==0.0.3
 packaging==20.9
 pkginfo==1.7.0
 prompt-toolkit==3.0.13
@@ -38,7 +38,6 @@ python-dotenv==0.15.0
 pytz==2020.5
 pywin32-ctypes==0.2.0
 readme-renderer==28.0
-redis==3.5.3
 requests==2.25.1
 requests-toolbelt==0.9.1
 rfc3986==1.4.0

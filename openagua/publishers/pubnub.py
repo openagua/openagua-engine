@@ -19,11 +19,11 @@ def on_publish(envelope, status):
 
 class PubNubPublisher(object):
 
-    def __init__(self, source_id, network_id, run_key=None):
+    def __init__(self, source_id, network_id, model_key=None, run_key=None):
 
         publish_key = environ.get(constants.PUBNUB_PUBLISH_KEY)
         subscribe_key = environ.get(constants.PUBNUB_SUBSCRIBE_KEY)
-        model_key = environ[constants.SECRET_KEY]
+        model_key = model_key or environ.get(constants.MODEL_KEY)
 
         if publish_key and subscribe_key:
             pnconfig = PNConfiguration()
