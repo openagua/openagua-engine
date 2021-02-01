@@ -1,6 +1,6 @@
 import setuptools
 
-VERSION = '0.0.5'
+VERSION = '0.0.6'
 
 # with open("README.md", "r", encoding="utf-8") as fh:
 #     long_description = fh.read()
@@ -16,7 +16,7 @@ setuptools.setup(
     description="Tools to connect a model engine to OpenAgua",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/openagua/openagua-connect",
+    url="https://github.com/openagua/openagua-engine",
     packages=setuptools.find_packages(),
     install_requires=["celery", "pubnub"],
     classifiers=[
