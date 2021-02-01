@@ -1,6 +1,6 @@
 # Overview
 
-**openagua_engine** is a Python package to help connect a model engine to OpenAgua, so that it can be controlled from and communicate with OpenAgua. It includes
+**openagua-engine** is a Python package to help connect a model engine to OpenAgua, so that it can be controlled from and communicate with OpenAgua. It includes
 1. a task queue subscriber to process model tasks instantiated in the OpenAgua app
 2. functions to report progress to the OpenAgua app 
 3. functions to read from/write to the OpenAgua database
@@ -13,7 +13,7 @@ OpenAgua uses [RabbitMQ](www.rabbitmq.com) to manage model run tasks and, for th
 
 This package is availabe via PyPI (see [project page](https://pypi.org/project/openagua-engine/)):
 
-`pip install openagua_engine`
+`pip install openagua-engine`
 
 ## From source
 
@@ -59,7 +59,7 @@ These are described along with code snippets below. See the [examples](https://g
 
 ### 1. Listen to a task queue
 
-A basic model engine requires a file called *tasks.py* that contains an entry function wrapped in a decorator "app", which is a Celery app created by openagua_engine. This app is then run in one of two ways.
+A basic model engine requires a file called *tasks.py* that contains an entry function wrapped in a decorator "app", which is a Celery app created by openagua-engine. This app is then run in one of two ways.
 
 #### 1a. Create the entry function
 
@@ -101,11 +101,11 @@ network = api.get_network(77)
 
 The sky is the limit here, especially considering parallel processing needs.
 
-One easy way to parallel process is as follows. Among other arguments sent by OpenAgua to the task queue (the "kwargs" in the run function above) are the scenario ID combinations to be run. Because openagua_engine uses Celery, the app created with `create_app()` can be used to decorate a scenario-centric function, which can then be run in asynchronous mode, as follows:
+One easy way to parallel process is as follows. Among other arguments sent by OpenAgua to the task queue (the "kwargs" in the run function above) are the scenario ID combinations to be run. Because openagua-engine uses Celery, the app created with `create_app()` can be used to decorate a scenario-centric function, which can then be run in asynchronous mode, as follows:
 
 ### 4a. Publish progress
 
-openagua_engine includes methods to report (publish) progress. First, import an OpenAgua class (`from openagua import OpenAgua`). Then, use it as follows:
+openagua-engine includes methods to report (publish) progress. First, import an OpenAgua class (`from openagua import OpenAgua`). Then, use it as follows:
 
 ```python
 total_steps = 60  # This would normally be queried from a scenario     
