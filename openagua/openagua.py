@@ -65,7 +65,32 @@ class OpenAgua:
         subscribe_pubnub(subscribe_key=subscribe_key, uuid=self.key, channel=channel,
                          handle_message=self.handle_message_received)
 
-    def get_payload(self, action, **kwargs):
+    def __getattr__(self, name):
+        def method(*args, **kwargs):
+            if name in statuses:
+                return self.publish_status(name, **kwargs)
+            elif name[:4] == 'get_':
+                return self.get_request(name, *args, **kwargs)
+            else:
+                return getattr(self, name)(*args, **kwargs)
+
+        return method
+
+    def get_request(self, fn, *args, **kwargs):
+        resource = fn[4:]
+        resource_id = args[0]
+        endpoint = '{api_endpoint}/{resource}/{resource_id}'.format(
+            api_endpoint=self.api_endpoint,
+            resource=resource + 's',
+            resource_id=resource_id
+        )
+        resp = requests.get(endpoint, headers={'X-Api-Key': self.api_key}, params=kwargs)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            return {'status_code': resp.status_code}
+
+    def prepare_payload(self, action, **kwargs):
         payload = self.payload.copy()
 
         datetime = kwargs.get('datetime')
