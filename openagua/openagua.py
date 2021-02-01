@@ -30,8 +30,11 @@ class OpenAgua:
                  api_endpoint='https://www.openagua.org/api/v1', api_key=None,
                  secret_key=None, run_key=None, total_steps=None):
 
+        # set up api
         self.api_key = api_key or environ.get(constants.API_KEY)
         self.api_endpoint = api_endpoint
+        self.api_headers = {'X-Api-Key': self.api_key}
+
         self.network_id = network_id
 
         scen_ids_set = list(set(scenario_ids))
@@ -69,22 +72,41 @@ class OpenAgua:
         def method(*args, **kwargs):
             if name in statuses:
                 return self.publish_status(name, **kwargs)
+            elif name[:4] == 'add_':
+                return self.request_post(name, **kwargs)
             elif name[:4] == 'get_':
-                return self.get_request(name, *args, **kwargs)
+                return self.request_get(name, *args, **kwargs)
+            elif name[:7] == 'update_':
+                return self.request_put(name, *args, **kwargs)
             else:
                 return getattr(self, name)(*args, **kwargs)
 
         return method
 
-    def get_request(self, fn, *args, **kwargs):
-        resource = fn[4:]
+    def request_post(self, fn, **kwargs):
+        resource = fn[4:]  # add_
+        endpoint = '{}/{}'.format(self.api_endpoint, resource + 's')
+        resp = requests.post(endpoint, headers=self.api_headers, json=kwargs)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            return {'status_code': resp.status_code}
+
+    def request_get(self, fn, *args, **kwargs):
+        resource = fn[4:]  # get_
         resource_id = args[0]
-        endpoint = '{api_endpoint}/{resource}/{resource_id}'.format(
-            api_endpoint=self.api_endpoint,
-            resource=resource + 's',
-            resource_id=resource_id
-        )
-        resp = requests.get(endpoint, headers={'X-Api-Key': self.api_key}, params=kwargs)
+        endpoint = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
+        resp = requests.get(endpoint, headers=self.api_headers, params=kwargs)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            return {'status_code': resp.status_code}
+
+    def request_put(self, fn, *args, **kwargs):
+        resource = fn[7:]  # update_
+        resource_id = args[0]
+        endpoint = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
+        resp = requests.get(endpoint, headers=self.api_headers, params=kwargs)
         if resp.status_code == 200:
             return resp.json()
         else:
