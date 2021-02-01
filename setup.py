@@ -2,8 +2,10 @@ import setuptools
 
 VERSION = '0.0.4'
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+# with open("README.md", "r", encoding="utf-8") as fh:
+#     long_description = fh.read()
+
+LONG_DESCRIPTION = 'See https://github.com/openagua/openagua-engine for documentation.'
 
 setuptools.setup(
     name="openagua-engine",
@@ -12,7 +14,7 @@ setuptools.setup(
     author="David Rheinheimer",
     author_email="david.rheinheimer@tec.mx",
     description="Tools to connect a model engine to OpenAgua",
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/openagua/openagua-connect",
     packages=setuptools.find_packages(),
