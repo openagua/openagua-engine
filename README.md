@@ -103,6 +103,23 @@ The sky is the limit here, especially considering parallel processing needs.
 
 One easy way to parallel process is as follows. Among other arguments sent by OpenAgua to the task queue (the "kwargs" in the run function above) are the scenario ID combinations to be run. Because openagua-engine uses Celery, the app created with `create_app()` can be used to decorate a scenario-centric function, which can then be run in asynchronous mode, as follows:
 
+```python
+@app.task(name='model.run')
+def run(**kwargs):
+    network = api.get_network(123)
+    
+    scenario_id_combinations = kwargs.pop('scenario_ids', [])
+    for scen_ids in scenario_id_combinations:
+        
+        # Run a single scenario model asynchronously
+        run_scenario.apply_async(args=(scen_ids, network,), kwargs=kwargs)
+
+@app.task
+def run_scenario(scen_ids, **kwargs):
+    # Run model here...
+    return
+```
+
 ### 4a. Publish progress
 
 openagua-engine includes methods to report (publish) progress. First, import an OpenAgua class (`from openagua import OpenAgua`). Then, use it as follows:
