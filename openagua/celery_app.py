@@ -6,10 +6,13 @@ from openagua import constants
 
 def create_app(model_key=None, run_key=None):
     model_key = model_key or environ.get(constants.MODEL_KEY)
+    if not model_key:
+        raise Exception("No model key provided. Please provide a model key as an argument\
+         or as the environment variable {}".format(constants.MODEL_KEY))
     run_key = run_key or environ.get(constants.RUN_KEY)
     broker_url = get_broker_url(model_key)
 
-    redis_host = environ.get('REDIS_HOST', 'localhost')
+    # redis_host = environ.get('REDIS_HOST', 'localhost')
 
     # test redis
     # redis.set('test', 1)
