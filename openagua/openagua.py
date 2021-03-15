@@ -20,15 +20,19 @@ statuses = {
 
 
 class OpenAgua:
-    reporter = None
     datetime = None
     _step = 0
     paused = False
     stopped = False
 
-    def __init__(self, guid, name, network_id, scenario_ids, source_id=1,
-                 api_endpoint='https://www.openagua.org/api/v1', api_key=None,
-                 secret_key=None, run_key=None, total_steps=None):
+    def __init__(self, guid, name, network_id, scenario_ids, source_id=1, request_host=None,
+                 api_endpoint=None, api_key=None, secret_key=None, run_key=None, total_steps=None):
+
+        if api_endpoint is None:
+            if request_host:
+                api_endpoint = request_host + 'api/v1'
+            else:
+                api_endpoint = 'https://www.openagua.org/api/v1'
 
         # set up api
         self.api_key = api_key or environ.get(constants.API_KEY)
@@ -85,8 +89,8 @@ class OpenAgua:
 
     def request_post(self, fn, **kwargs):
         resource = fn[4:]  # add_
-        endpoint = '{}/{}'.format(self.api_endpoint, resource + 's')
-        resp = requests.post(endpoint, headers=self.api_headers, json=kwargs)
+        url = '{}/{}'.format(self.api_endpoint, resource + 's')
+        resp = requests.post(url, headers=self.api_headers, json=kwargs)
         if resp.status_code == 200:
             return resp.json()
         else:
@@ -95,8 +99,8 @@ class OpenAgua:
     def request_get(self, fn, *args, **kwargs):
         resource = fn[4:]  # get_
         resource_id = args[0]
-        endpoint = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
-        resp = requests.get(endpoint, headers=self.api_headers, params=kwargs)
+        url = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
+        resp = requests.get(url, headers=self.api_headers, params=kwargs)
         if resp.status_code == 200:
             return resp.json()
         else:
@@ -105,8 +109,8 @@ class OpenAgua:
     def request_put(self, fn, *args, **kwargs):
         resource = fn[7:]  # update_
         resource_id = args[0]
-        endpoint = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
-        resp = requests.get(endpoint, headers=self.api_headers, params=kwargs)
+        url = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
+        resp = requests.get(url, headers=self.api_headers, params=kwargs)
         if resp.status_code == 200:
             return resp.json()
         else:
@@ -133,6 +137,18 @@ class OpenAgua:
 
         return payload
 
+    def report(self, action, payload):
+        url = '{api_endpoint}/models/runs/{sid}/actions/{action}'.format(
+            api_endpoint=self.api_endpoint,
+            sid=self.run_id,
+            action=action
+        )
+        resp = requests.post(url, headers=self.api_headers, json=payload)
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            return {'status_code': resp.status_code}
+
     def publish_status(self, action, **kwargs):
 
         if action == 'step':
@@ -149,9 +165,7 @@ class OpenAgua:
             self.publisher.publish(payload)
 
         if action != 'step':
-            # report key events to the OpenAgua server
-            if self.reporter:
-                self.reporter.post(action, payload)
+            self.report(action, payload)
 
         return
 
