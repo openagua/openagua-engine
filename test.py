@@ -20,12 +20,12 @@ class TestOpenAgua(unittest.TestCase):
         from openagua import create_app
 
     def test_create_openagua(self):
-        from openagua import OpenAgua
-        oa = OpenAgua(**test_kwargs)
+        from openagua import OpenAguaEngine
+        oa = OpenAguaEngine(**test_kwargs)
 
     def test_get_network(self):
-        from openagua import OpenAgua
-        oa = OpenAgua(**test_kwargs)
+        from openagua import OpenAguaEngine
+        oa = OpenAguaEngine(**test_kwargs)
         resp = oa.get_network(oa.network_id)
         assert 'network' in resp
 
