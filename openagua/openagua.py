@@ -19,7 +19,7 @@ statuses = {
 }
 
 
-class OpenAgua:
+class OpenAguaEngine:
     datetime = None
     _step = 0
     paused = False
@@ -37,7 +37,7 @@ class OpenAgua:
         # set up api
         self.api_key = api_key or environ.get(constants.API_KEY)
         self.api_endpoint = api_endpoint
-        self.api_headers = {'X-Api-Key': self.api_key}
+        self.api_headers = {'X-API-KEY': self.api_key}
 
         self.network_id = network_id
 
