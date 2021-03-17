@@ -1,8 +1,8 @@
 from os import environ
 import json
 from kombu import Connection, Exchange, Queue
-from openagua.utils import get_broker_url
-from openagua import constants
+from openagua_engine.utils import get_broker_url
+from openagua_engine import constants
 
 
 class RabbitMQPublisher(object):

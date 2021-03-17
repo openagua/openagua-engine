@@ -3,9 +3,11 @@ import datetime as dt
 
 import requests
 
-from openagua import constants
-from openagua.publishers.pubnub import PubNubPublisher
-from openagua.subscribers.pubnub import subscribe_pubnub
+from openagua_engine import constants
+from openagua_engine.publishers.pubnub import PubNubPublisher
+from openagua_engine.subscribers.pubnub import subscribe_pubnub
+
+from openagua_client import Client
 
 statuses = {
     'start': 'started',
@@ -38,6 +40,8 @@ class OpenAguaEngine:
         self.api_key = api_key or environ.get(constants.API_KEY)
         self.api_endpoint = api_endpoint
         self.api_headers = {'X-API-KEY': self.api_key}
+
+        self.Client = Client(request_host=request_host, api_endpoint=api_endpoint, api_key=api_key)
 
         self.network_id = network_id
 

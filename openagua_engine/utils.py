@@ -1,5 +1,5 @@
 from os import environ
-from openagua import constants
+from openagua_engine import constants
 
 
 def get_broker_url(model_key, protocol='amqp'):

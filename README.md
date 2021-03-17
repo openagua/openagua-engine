@@ -64,7 +64,7 @@ A basic model engine requires a file called *tasks.py* that contains an entry fu
 #### 1a. Create the entry function
 
 ```python
-from openagua import create_app
+from openagua_engine import create_app
 
 app = create_app()
 
@@ -92,8 +92,9 @@ if __name__=='__main__':
 
 Here is an example to instantiate the OpenAgua API and get a network:
 ```python
-from openagua import API
-api = API()
+from openagua_engine import OpenAguaEngine as OA
+oa = OA()
+api = oa.Client
 network = api.get_network(77)
 ```
 
@@ -106,7 +107,7 @@ One easy way to parallel process is as follows. Among other arguments sent by Op
 ```python
 @app.task(name='model.run')
 def run(**kwargs):
-    network = api.get_network(123)
+    network = oa.get_network(123)
     
     scenario_id_combinations = kwargs.pop('scenario_ids', [])
     for scen_ids in scenario_id_combinations:
@@ -122,7 +123,7 @@ def run_scenario(scen_ids, **kwargs):
 
 ### 4a. Publish progress
 
-openagua-engine includes methods to report (publish) progress. First, import an OpenAgua class (`from openagua import OpenAgua`). Then, use it as follows:
+openagua-engine includes methods to report (publish) progress. First, import an OpenAgua class (`from openagua-engine import OpenAgua`). Then, use it as follows:
 
 ```python
 total_steps = 60  # This would normally be queried from a scenario     

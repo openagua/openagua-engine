@@ -3,7 +3,7 @@ from os import environ
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 
-from openagua import constants
+from openagua_engine import constants
 
 
 def on_publish(envelope, status):

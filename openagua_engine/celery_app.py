@@ -1,7 +1,7 @@
 from os import environ
 from celery import Celery
-from openagua.utils import get_broker_url
-from openagua import constants
+from openagua_engine.utils import get_broker_url
+from openagua_engine import constants
 
 
 def create_app(model_key=None, run_key=None):

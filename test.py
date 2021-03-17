@@ -17,14 +17,14 @@ class TestOpenAgua(unittest.TestCase):
         """
         Test that it can be imported
         """
-        from openagua import create_app
+        from openagua_engine import create_app
 
     def test_create_openagua(self):
-        from openagua import OpenAguaEngine
+        from openagua_engine import OpenAguaEngine
         oa = OpenAguaEngine(**test_kwargs)
 
     def test_get_network(self):
-        from openagua import OpenAguaEngine
+        from openagua_engine import OpenAguaEngine
         oa = OpenAguaEngine(**test_kwargs)
         resp = oa.get_network(oa.network_id)
         assert 'network' in resp
