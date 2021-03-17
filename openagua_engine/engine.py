@@ -107,7 +107,7 @@ class OpenAguaEngine:
         return payload
 
     def report(self, action, payload):
-        if not self.api_endpoint:
+        if not self.run_id or not self.api_endpoint:
             logger.info(action)
             return
 
