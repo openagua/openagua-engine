@@ -107,11 +107,16 @@ class OpenAguaEngine:
         if isinstance(datetime, dt.datetime) or isinstance(datetime, dt.date):
             datetime = datetime.isoformat()
 
+        if self.total_steps:
+            progress = int(round(self._step / self.total_steps * 100))
+        else:
+            progress = 0.0
+
         payload.update(
             action=action,
             status=statuses.get(action, 'unknown'),
             datetime=datetime,
-            progress=int(round(self._step / self.total_steps * 100))
+            progress=progress
         )
 
         if action == 'done':
