@@ -1,5 +1,6 @@
 from os import environ
 import datetime as dt
+from loguru import logger
 
 import requests
 
@@ -27,14 +28,11 @@ class OpenAguaEngine:
     paused = False
     stopped = False
 
-    def __init__(self, guid, name, network_id, scenario_ids, source_id=1, request_host=None,
+    def __init__(self, name, network_id, scenario_ids, guid=None, source_id=1, request_host=None,
                  api_endpoint=None, api_key=None, secret_key=None, run_key=None, total_steps=None):
 
-        if api_endpoint is None:
-            if request_host:
-                api_endpoint = request_host + 'api/v1'
-            else:
-                api_endpoint = 'https://www.openagua.org/api/v1'
+        if api_endpoint is None and request_host is not None:
+            api_endpoint = request_host + 'api/v1'
 
         # set up api
         self.api_key = api_key or environ.get(constants.API_KEY)
@@ -47,10 +45,13 @@ class OpenAguaEngine:
 
         scen_ids_set = list(set(scenario_ids))
 
-        run_id = '{guid}-{scen_ids}'.format(
-            guid=guid,
-            scen_ids='-'.join(str(s) for s in scen_ids_set)
-        )
+        if guid is not None:
+            run_id = '{guid}-{scen_ids}'.format(
+                guid=guid,
+                scen_ids='-'.join(str(s) for s in scen_ids_set)
+            )
+        else:
+            run_id = None
 
         self.run_id = run_id
         self.key = secret_key or environ.get(constants.MODEL_KEY)
@@ -80,45 +81,9 @@ class OpenAguaEngine:
         def method(*args, **kwargs):
             if name in statuses:
                 return self.publish_status(name, **kwargs)
-            elif name[:4] == 'add_':
-                return self.request_post(name, **kwargs)
-            elif name[:4] == 'get_':
-                return self.request_get(name, *args, **kwargs)
-            elif name[:7] == 'update_':
-                return self.request_put(name, *args, **kwargs)
             else:
                 return getattr(self, name)(*args, **kwargs)
-
         return method
-
-    def request_post(self, fn, **kwargs):
-        resource = fn[4:]  # add_
-        url = '{}/{}'.format(self.api_endpoint, resource + 's')
-        resp = requests.post(url, headers=self.api_headers, json=kwargs)
-        if resp.status_code == 200:
-            return resp.json()
-        else:
-            return {'status_code': resp.status_code}
-
-    def request_get(self, fn, *args, **kwargs):
-        resource = fn[4:]  # get_
-        resource_id = args[0]
-        url = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
-        resp = requests.get(url, headers=self.api_headers, params=kwargs)
-        if resp.status_code == 200:
-            return resp.json()
-        else:
-            return {'status_code': resp.status_code}
-
-    def request_put(self, fn, *args, **kwargs):
-        resource = fn[7:]  # update_
-        resource_id = args[0]
-        url = '{}/{}/{}'.format(self.api_endpoint, resource + 's', resource_id)
-        resp = requests.get(url, headers=self.api_headers, params=kwargs)
-        if resp.status_code == 200:
-            return resp.json()
-        else:
-            return {'status_code': resp.status_code}
 
     def prepare_payload(self, action, **kwargs):
         payload = self.payload.copy()
@@ -142,6 +107,10 @@ class OpenAguaEngine:
         return payload
 
     def report(self, action, payload):
+        if not self.api_endpoint:
+            logger.info(action)
+            return
+
         url = '{api_endpoint}/models/runs/{sid}/actions/{action}'.format(
             api_endpoint=self.api_endpoint,
             sid=self.run_id,
