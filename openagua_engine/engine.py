@@ -27,17 +27,30 @@ class OpenAguaEngine:
     _step = 0
     paused = False
     stopped = False
+    api_headers = None
+    api_endpoint = None
 
     def __init__(self, name, network_id, scenario_ids, guid=None, source_id=1, request_host=None,
                  api_endpoint=None, api_key=None, secret_key=None, run_key=None, total_steps=None):
 
-        if api_endpoint is None and request_host is not None:
-            api_endpoint = request_host + 'api/v1'
-
         # set up api
-        self.api_key = api_key or environ.get(constants.API_KEY)
+
+        if api_endpoint is None:
+            if request_host:
+                if request_host[-1] == '/':
+                    api_endpoint = request_host + 'api/v1'
+                else:
+                    api_endpoint = request_host + '/api/v1'
+            else:
+                api_endpoint = 'https://www.openagua.org/api/v1'
         self.api_endpoint = api_endpoint
-        self.api_headers = {'X-API-KEY': self.api_key}
+
+        self.api_key = api_key or environ.get(constants.API_KEY)
+        if not self.api_key:
+            logger.warning(
+                'No OpenAgua API key supplied. You will not be able to read from OpenAgua or report lifecycle progress.')
+        else:
+            self.api_headers = {'X-API-KEY': self.api_key}
 
         self.Client = Client(request_host=request_host, api_endpoint=api_endpoint, api_key=api_key)
 
@@ -54,10 +67,10 @@ class OpenAguaEngine:
             run_id = None
 
         self.run_id = run_id
-        self.key = secret_key or environ.get(constants.MODEL_KEY)
+        self.model_key = secret_key or environ.get(constants.MODEL_KEY)
         self.total_steps = total_steps
-        if not self.key:
-            raise Exception('No OpenAgua key supplied.')
+        if not self.model_key:
+            raise Exception('No model key supplied. This probably won''t work.')
 
         self.payload = {
             'sid': run_id,
@@ -72,10 +85,11 @@ class OpenAguaEngine:
         self.publisher = PubNubPublisher(source_id=source_id, network_id=network_id, run_key=run_key)
 
         # SUBSCRIBE
-        channel = 'model-{model_key}-{run_id}'.format(model_key=self.key, run_id=self.run_id)
-        subscribe_key = environ.get(constants.PUBNUB_SUBSCRIBE_KEY)
-        subscribe_pubnub(subscribe_key=subscribe_key, uuid=self.key, channel=channel,
-                         handle_message=self.handle_message_received)
+        if self.model_key:
+            channel = 'model-{model_key}-{run_id}'.format(model_key=self.model_key, run_id=self.run_id)
+            subscribe_key = environ.get(constants.PUBNUB_SUBSCRIBE_KEY)
+            subscribe_pubnub(subscribe_key=subscribe_key, uuid=self.key, channel=channel,
+                             handle_message=self.handle_message_received)
 
     def __getattr__(self, name):
         def method(*args, **kwargs):
@@ -83,6 +97,7 @@ class OpenAguaEngine:
                 return self.publish_status(name, **kwargs)
             else:
                 return getattr(self, name)(*args, **kwargs)
+
         return method
 
     def prepare_payload(self, action, **kwargs):
