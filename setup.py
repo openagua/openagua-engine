@@ -1,6 +1,6 @@
 import setuptools
 
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -16,7 +16,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/openagua/openagua-engine",
     packages=setuptools.find_packages(),
-    install_requires=["celery", "pubnub"],
+    install_requires=["celery", "pubnub", "requests", "openagua_client"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
