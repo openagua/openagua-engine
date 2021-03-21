@@ -155,7 +155,7 @@ class OpenAguaEngine:
 
         if action == 'error':
             self.has_error = True
-        if action == 'finished' and self.has_error:
+        if action == 'finish' and self.has_error:
             return  # don't do anything
 
         # publish to a pubsub service for realtime updates
