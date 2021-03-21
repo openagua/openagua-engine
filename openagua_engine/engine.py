@@ -153,10 +153,10 @@ class OpenAguaEngine:
 
         payload = self.prepare_payload(action, **kwargs)
 
-        if action in ['step', 'save']:
-            # publish to a pubsub service for realtime updates
-            self.publisher.publish(payload)
+        # publish to a pubsub service for realtime updates
+        self.publisher.publish(payload)
 
+        # and also report life stage events to the OpenAgua server
         if action != 'step':
             self.report(action, payload)
 
