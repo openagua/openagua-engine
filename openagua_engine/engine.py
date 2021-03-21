@@ -153,6 +153,11 @@ class OpenAguaEngine:
 
         payload = self.prepare_payload(action, **kwargs)
 
+        if action == 'error':
+            self.has_error = True
+        if action == 'finished' and self.has_error:
+            return  # don't do anything
+
         # publish to a pubsub service for realtime updates
         self.publisher.publish(payload)
 
