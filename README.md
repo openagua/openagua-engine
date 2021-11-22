@@ -35,7 +35,7 @@ OpenAgua Engine requires several configuration keys to work. These may be provid
 These may be provided in a number of ways. One common and easy way is to use a file called `.env` with your keys (and maybe some others as needed for your application):
 
 ```dotenv
-OA_API_KEY=SECRETKEY123
+OA_API_KEY=APIKEY123
 OA_SECRET_KEY=SECRETKEY123
 OA_MODEL_KEY=MODELKEY456
 OA_RABBITMQ_HOST=1.2.3.4

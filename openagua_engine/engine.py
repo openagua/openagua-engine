@@ -29,6 +29,7 @@ class OpenAguaEngine:
     stopped = False
     api_headers = None
     api_endpoint = None
+    has_error = False
 
     def __init__(self, name, network_id, scenario_ids, guid=None, source_id=1, request_host=None,
                  api_endpoint=None, api_key=None, secret_key=None, run_key=None, total_steps=None):
