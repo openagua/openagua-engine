@@ -39,6 +39,8 @@ OA_API_KEY=APIKEY123
 OA_SECRET_KEY=SECRETKEY123
 OA_MODEL_KEY=MODELKEY456
 OA_RABBITMQ_HOST=1.2.3.4
+OA_PUBNUB_PUBLISH_KEY=pubnubpublishkey123
+OA_PUBNUB_SUBSCRIBE_KEY=pubnubsubscribekey123
 ```
 This can be loaded into your main *tasks.py* script as:
 ```python
