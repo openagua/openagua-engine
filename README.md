@@ -87,8 +87,9 @@ if __name__=='__main__':
     app.start(['-A', 'tasks', 'worker', '-l', 'INFO'])
 ```
 
-**Windows users**: Celery does not officially support Windows. While there are several fixes, one that seems to work is to use the "solo" process when running this app:
+**WINDOWS USERS**: Celery does not officially support Windows. While there are several fixes, one that seems to work is to use the "solo" process when running this app:
 `celery -A tasks worker -l INFO -P solo`
+Unfortunately, this means you cannot do concurrent (parallel) runs. Further work is needed to identify workarounds. In the meantime, if the app can be run on Linux, either a dedicated Linux server or Windows Subsystem for Linux (WSL) are options if concurrency is needed.
 
 ### 2. Read data from OpenAgua
 
