@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/334736504.svg)](https://zenodo.org/badge/latestdoi/334736504)
+
 # Overview
 
 **openagua-engine** is a Python package to help connect a model engine to OpenAgua, so that it can be controlled from and communicate with OpenAgua. It includes
