@@ -90,7 +90,7 @@ class OpenAguaEngine:
             channel = 'model-{model_key}-{run_id}'.format(model_key=self.model_key, run_id=self.run_id)
             subscribe_key = environ.get(constants.PUBNUB_SUBSCRIBE_KEY)
             subscribe_pubnub(subscribe_key=subscribe_key, uuid=self.model_key, channel=channel,
-                             handle_message=self.handle_message_received)
+                             handle_message=self.handle_pubnub_message)
 
     def __getattr__(self, name):
         def method(*args, **kwargs):
@@ -168,7 +168,7 @@ class OpenAguaEngine:
 
         return
 
-    def handle_message_received(self, message):
+    def handle_pubnub_message(self, message):
         if message:
             state = message.get('state')
             self.stopped = state == 'stopped'
